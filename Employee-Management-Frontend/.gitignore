@@ -1,1 +1,8 @@
-/node_modules/
+ React specific ignores
+node_modules/
+build/
+dist/
+.env
+npm-debug.log
+yarn-debug.log
+yarn-error.log
