@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Employee-Management-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=sqlserver           # Set the SQL Server service name as the host
+      - DB_NAME=EmployeeDB          # Assuming EmployeeDB is the target database
+      - DB_SA_PASSWORD=ComplexP@ssw0rd!  # Corrected the environment variable syntax
+    depends_on:
+      - sqlserver
+
+  frontend:
+    build:
+      context: ./Employee-Management-Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - SA_PASSWORD=ComplexP@ssw0rd!  # SQL Server SA password
+      - ACCEPT_EULA=Y                 # Accepting SQL Server's EULA
+    ports:
+      - "1433:1433"
+    networks:
+      - app-network
+    volumes:
+      - sqlserver-data:/var/opt/mssql  # Persisting SQL Server data
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
